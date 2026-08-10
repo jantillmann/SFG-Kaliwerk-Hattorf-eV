@@ -421,7 +421,8 @@
 
       <div class="card contact-form-card">
         <h3 style="margin-bottom:24px;">Schreib uns eine Nachricht</h3>
-        <form id="contactForm" onsubmit="return sendContactMail(event)">
+        <div id="form-status"></div>
+        <form id="contactForm" method="post" action="contact.php">
           <div class="form-row">
             <label for="cf-reason">Worum geht's?</label>
             <select id="cf-reason" name="reason">
@@ -577,28 +578,19 @@
       link.textContent = CONTACT_EMAIL;
       link.href = 'mailto:' + CONTACT_EMAIL;
     }
+
+    var status = document.getElementById('form-status');
+    var params = new URLSearchParams(window.location.search);
+    if (status && params.has('sent')) {
+      if (params.get('sent') === '1') {
+        status.className = 'form-status form-status-ok';
+        status.textContent = 'Danke! Deine Nachricht ist raus.';
+      } else {
+        status.className = 'form-status form-status-error';
+        status.textContent = 'Da ist was schiefgelaufen — bitte nochmal versuchen oder direkt per E-Mail melden.';
+      }
+      var cleanUrl = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, '', cleanUrl);
+    }
   });
-
-  function sendContactMail(e) {
-    e.preventDefault();
-    // honeypot: if this hidden field got filled, it's a bot — quietly drop
-    var honeypot = document.getElementById('cf-company');
-    if (honeypot && honeypot.value) return false;
-
-    const labels = {
-      allgemein: 'Allgemeine Anfrage',
-      einfuehrung: 'Einführungsflug',
-      gutschein: 'Rundflug-Gutschein',
-      event: 'Veranstaltung / Betriebsfeier',
-      mitglied: 'Mitglied werden'
-    };
-    const reason = document.getElementById('cf-reason').value;
-    const name = document.getElementById('cf-name').value;
-    const email = document.getElementById('cf-email').value;
-    const message = document.getElementById('cf-message').value;
-    const subject = encodeURIComponent('Anfrage über die Website: ' + (labels[reason] || 'Allgemeine Anfrage'));
-    const body = encodeURIComponent(`Name: ${name}\nE-Mail: ${email}\n\n${message}`);
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-    return false;
-  }
 </script>

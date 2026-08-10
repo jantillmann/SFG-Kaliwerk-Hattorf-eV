@@ -272,6 +272,9 @@ nav.menu .dropdown:hover .dropdown-panel { opacity: 1; pointer-events: auto; top
 .form-row select:focus, .form-row input:focus, .form-row textarea:focus { outline: none; border-color: var(--sky); }
 .form-row textarea { resize: vertical; }
 .hp-field { position: absolute; left: -9999px; top: -9999px; height: 0; overflow: hidden; }
+.form-status { display: none; padding: 12px 16px; border-radius: 10px; font-size: .88rem; font-weight: 600; margin-bottom: 20px; }
+.form-status-ok { display: block; background: #e6f6ec; color: #1a7f4b; }
+.form-status-error { display: block; background: #fdecec; color: #b8342a; }
 
 /* Lightbox */
 .lightbox {
