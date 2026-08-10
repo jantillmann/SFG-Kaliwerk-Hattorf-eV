@@ -1,7 +1,7 @@
 <meta charset="UTF-8">
 <title>Flugplatz Plätzer | SFG Kaliwerk Hattorf e.V.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Segelflug, Ultraleichtflug und Motorflug am Fluggelände Plätzer bei Burghaun. Ehrenamtliche Fluglehrer, familiäre Atmosphäre, moderner Flugzeugpark.">
+<meta name="description" content="Segelflug, Ultraleichtflug und Motorflug am Fluggelände Plätzer bei Burghaun. Ehrenamtliche Fluglehrer, familiäre Atmosphäre, bewährter Flugzeugpark.">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
@@ -99,7 +99,6 @@
             <span class="tag">Segelflug</span>
             <h3>Lautlos in die Lüfte</h3>
             <p>Für viele der Einstieg in die Fliegerei. Fliegerisches Können lässt sich nirgendwo besser aufbauen als lautlos, ohne Hilfe eines Motors.</p>
-            <a class="btn btn-outline" href="#ausbildung">Mehr erfahren →</a>
           </div>
         </div>
         <div class="discipline-card">
@@ -109,7 +108,6 @@
             <span class="tag">Ultraleichtflug</span>
             <h3>Einstieg in die Motorfliegerei</h3>
             <p>Kostengünstig, mit allen Freiheiten in die Lüfte steigen — mit bis zu einer weiteren Person an Bord.</p>
-            <a class="btn btn-outline" href="#ausbildung">Mehr erfahren →</a>
           </div>
         </div>
       </div>
@@ -207,8 +205,8 @@
     <div class="wrap">
       <div class="section-head center">
         <span class="eyebrow">Unser Hangar</span>
-        <h2>Ein moderner Flugzeugpark</h2>
-        <p>Mit der ASK 21 haben wir einen gutmütigen und dennoch leistungsstarken Schulungsdoppelsitzer. Die TL 96 ist unser leistungsstarkes Schleppflugzeug für Überlandflüge — und die Remo (DR 400) unseres Partnervereins bringt 4 Sitze für große Touren mit.</p>
+        <h2>Unser Flugzeugpark</h2>
+        <p>Bewährte Klassiker, von uns selbst gepflegt und in Schuss gehalten: Mit der ASK 21 haben wir einen gutmütigen und leistungsstarken Schulungsdoppelsitzer. Die TL 96 ist unser zuverlässiges Schleppflugzeug für Überlandflüge — und die Remo (DR 400) unseres Partnervereins bringt 4 Sitze für große Touren mit.</p>
       </div>
 
       <div class="fleet-grid">
@@ -389,7 +387,7 @@
           </div>
           <div class="contact-card">
             <div class="icon-tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg></div>
-            <div><h4>E-Mail</h4><a href="mailto:kontakt@flugplatz-plaetzer.de">kontakt@flugplatz-plaetzer.de</a></div>
+            <div><h4>E-Mail</h4><a id="email-link" href="#">E-Mail anzeigen</a></div>
           </div>
           <div class="contact-card">
             <div class="icon-tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
@@ -408,8 +406,7 @@
       </div>
 
       <div class="card contact-form-card">
-        <h3 style="margin-bottom:6px;">Schreib uns eine Nachricht</h3>
-        <p style="margin-bottom:24px;">Wähle kurz den Grund deiner Anfrage — den Rest erledigt dein E-Mail-Programm.</p>
+        <h3 style="margin-bottom:24px;">Schreib uns eine Nachricht</h3>
         <form id="contactForm" onsubmit="return sendContactMail(event)">
           <div class="form-row">
             <label for="cf-reason">Worum geht's?</label>
@@ -434,6 +431,10 @@
           <div class="form-row">
             <label for="cf-message">Nachricht</label>
             <textarea id="cf-message" name="message" rows="4"></textarea>
+          </div>
+          <div class="hp-field" aria-hidden="true">
+            <label for="cf-company">Firma</label>
+            <input id="cf-company" name="company" type="text" tabindex="-1" autocomplete="off">
           </div>
           <button type="submit" class="btn btn-primary">Nachricht senden</button>
         </form>
@@ -509,8 +510,23 @@
     if (select) select.value = key;
   }
 
+  // simple obfuscation against plain-text email harvesters
+  var CONTACT_EMAIL = ['kontakt', 'flugplatz-plaetzer.de'].join('@');
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var link = document.getElementById('email-link');
+    if (link) {
+      link.textContent = CONTACT_EMAIL;
+      link.href = 'mailto:' + CONTACT_EMAIL;
+    }
+  });
+
   function sendContactMail(e) {
     e.preventDefault();
+    // honeypot: if this hidden field got filled, it's a bot — quietly drop
+    var honeypot = document.getElementById('cf-company');
+    if (honeypot && honeypot.value) return false;
+
     const labels = {
       allgemein: 'Allgemeine Anfrage',
       einfuehrung: 'Einführungsflug',
@@ -524,7 +540,7 @@
     const message = document.getElementById('cf-message').value;
     const subject = encodeURIComponent('Anfrage über die Website: ' + (labels[reason] || 'Allgemeine Anfrage'));
     const body = encodeURIComponent(`Name: ${name}\nE-Mail: ${email}\n\n${message}`);
-    window.location.href = `mailto:kontakt@flugplatz-plaetzer.de?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
     return false;
   }
 </script>
