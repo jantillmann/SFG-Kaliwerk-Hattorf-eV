@@ -312,14 +312,28 @@
         <h2>Leben am Plätzer</h2>
       </div>
       <div class="gallery-grid">
-        <a href="assets/img/IMG_3399-scaled.jpeg" target="_blank"><img src="assets/img/IMG_3399-scaled.jpeg" alt="Impression vom Flugplatz Plätzer"></a>
-        <a href="assets/img/IMG_4565.jpeg" target="_blank"><img src="assets/img/IMG_4565.jpeg" alt="Impression vom Flugplatz Plätzer"></a>
-        <a href="assets/img/IMG_4685-scaled.jpeg" target="_blank"><img src="assets/img/IMG_4685-scaled.jpeg" alt="Impression vom Flugplatz Plätzer"></a>
-        <a href="assets/img/IMG_E6417-scaled.jpeg" target="_blank"><img src="assets/img/IMG_E6417-scaled.jpeg" alt="Impression vom Flugplatz Plätzer"></a>
-        <a href="assets/img/IMG_9994-1-scaled.jpg" target="_blank"><img src="assets/img/IMG_9994-1-scaled.jpg" alt="Impression vom Flugplatz Plätzer"></a>
+        <a href="#" onclick="openLightbox(0); return false;"><img src="assets/img/IMG_3399-scaled.jpeg" alt="Impression vom Flugplatz Plätzer"></a>
+        <a href="#" onclick="openLightbox(1); return false;"><img src="assets/img/IMG_4565.jpeg" alt="Impression vom Flugplatz Plätzer"></a>
+        <a href="#" onclick="openLightbox(2); return false;"><img src="assets/img/IMG_4685-scaled.jpeg" alt="Impression vom Flugplatz Plätzer"></a>
+        <a href="#" onclick="openLightbox(3); return false;"><img src="assets/img/IMG_E6417-scaled.jpeg" alt="Impression vom Flugplatz Plätzer"></a>
+        <a href="#" onclick="openLightbox(4); return false;"><img src="assets/img/IMG_9994-1-scaled.jpg" alt="Impression vom Flugplatz Plätzer"></a>
       </div>
     </div>
   </section>
+
+  <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="Schließen">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1, event)" aria-label="Vorheriges Bild">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+    <button class="lightbox-nav lightbox-next" onclick="navLightbox(1, event)" aria-label="Nächstes Bild">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div id="lightbox-count" class="lightbox-count"></div>
+  </div>
 
   <!-- VEREIN -->
   <section class="section-alt" id="verein">
@@ -332,7 +346,7 @@
       <div style="max-width:380px; margin:0 auto;">
         <div class="card" style="display:flex; gap:16px; align-items:flex-start;">
           <div class="icon-tile" style="margin-bottom:0; flex-shrink:0;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div>
-          <div><h3>Instagram</h3><p>Folge uns für aktuelle Eindrücke vom Flugplatzalltag.</p><a class="btn btn-ghost" style="margin-top:12px;" href="INSTAGRAM_URL_HIER" target="_blank" rel="noopener">@INSTAGRAM_HANDLE</a></div>
+          <div><h3>Instagram</h3><p>Folge uns für aktuelle Eindrücke vom Flugplatzalltag.</p><a class="btn btn-ghost" style="margin-top:12px;" href="https://www.instagram.com/sfg_hattorf/" target="_blank" rel="noopener">@sfg_hattorf</a></div>
         </div>
       </div>
     </div>
@@ -504,6 +518,50 @@
     document.querySelectorAll('.tabs-toggle button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
     document.querySelectorAll('#ausbildung .tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
   }
+
+  var galleryImages = [
+    { src: 'assets/img/IMG_3399-scaled.jpeg', alt: 'Impression vom Flugplatz Plätzer' },
+    { src: 'assets/img/IMG_4565.jpeg', alt: 'Impression vom Flugplatz Plätzer' },
+    { src: 'assets/img/IMG_4685-scaled.jpeg', alt: 'Impression vom Flugplatz Plätzer' },
+    { src: 'assets/img/IMG_E6417-scaled.jpeg', alt: 'Impression vom Flugplatz Plätzer' },
+    { src: 'assets/img/IMG_9994-1-scaled.jpg', alt: 'Impression vom Flugplatz Plätzer' }
+  ];
+  var lightboxIndex = 0;
+
+  function updateLightbox() {
+    var item = galleryImages[lightboxIndex];
+    var img = document.getElementById('lightbox-img');
+    img.src = item.src;
+    img.alt = item.alt;
+    document.getElementById('lightbox-count').textContent = (lightboxIndex + 1) + ' / ' + galleryImages.length;
+  }
+
+  function openLightbox(i) {
+    lightboxIndex = i;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(e) {
+    if (e) e.stopPropagation();
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function navLightbox(dir, e) {
+    if (e) e.stopPropagation();
+    lightboxIndex = (lightboxIndex + dir + galleryImages.length) % galleryImages.length;
+    updateLightbox();
+  }
+
+  document.addEventListener('keydown', function (e) {
+    var lb = document.getElementById('lightbox');
+    if (!lb || !lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') navLightbox(-1);
+    if (e.key === 'ArrowRight') navLightbox(1);
+  });
 
   function presetReason(key) {
     const select = document.getElementById('cf-reason');
