@@ -416,10 +416,14 @@
             <div><h4>Fluggelände Plätzer</h4><span class="val">50.7103° N, 9.7391° O · oberhalb Burghaun</span></div>
           </div>
         </div>
-        <div class="map-embed">
-          <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=9.71%2C50.70%2C9.77%2C50.72&layer=mapnik&marker=50.7103%2C9.7391">
-          </iframe>
+        <div class="map-embed" id="map-embed">
+          <div class="map-consent" id="map-consent">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <h4>Anfahrtskarte</h4>
+            <p>Die Karte wird von OpenStreetMap bereitgestellt. Beim Laden wird deine IP-Adresse an die OpenStreetMap Foundation übertragen. Details in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
+            <button type="button" class="btn btn-primary" id="map-load">Karte laden</button>
+            <a class="map-consent-alt" href="https://www.openstreetmap.org/?mlat=50.7103&mlon=9.7391#map=15/50.7103/9.7391" target="_blank" rel="noopener">Oder direkt auf openstreetmap.org öffnen</a>
+          </div>
         </div>
       </div>
 
@@ -455,6 +459,7 @@
             <label for="cf-company">Firma</label>
             <input id="cf-company" name="company" type="text" tabindex="-1" autocomplete="off">
           </div>
+          <p class="form-privacy">Deine Angaben werden per E-Mail an den Verein übermittelt und nur zur Bearbeitung deiner Anfrage verwendet. Mehr dazu in der <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
           <button type="submit" class="btn btn-primary">Nachricht senden</button>
         </form>
       </div>
@@ -499,7 +504,7 @@
     </div>
     <div class="footer-bottom">
       <span>SFG Kaliwerk Hattorf e.V. © 2026</span>
-      <span class="cookie-note">Diese Website verwendet nur technisch notwendige Cookies.</span>
+      <span class="cookie-note">Diese Website setzt keine Cookies und verwendet keine Tracking-Dienste.</span>
     </div>
   </div>
 </footer>
@@ -509,6 +514,20 @@
   const menu = document.getElementById('menu');
   burger.addEventListener('click', () => menu.classList.toggle('open'));
   document.querySelectorAll('.menu a').forEach(a => a.addEventListener('click', () => menu.classList.remove('open')));
+
+  // Anfahrtskarte erst nach Klick laden (keine Verbindung zu OpenStreetMap ohne Einwilligung)
+  var mapLoad = document.getElementById('map-load');
+  if (mapLoad) {
+    mapLoad.addEventListener('click', function () {
+      var frame = document.createElement('iframe');
+      frame.src = 'https://www.openstreetmap.org/export/embed.html?bbox=9.71%2C50.70%2C9.77%2C50.72&layer=mapnik&marker=50.7103%2C9.7391';
+      frame.title = 'Anfahrtskarte Fluggelände Plätzer (OpenStreetMap)';
+      frame.referrerPolicy = 'no-referrer';
+      var wrap = document.getElementById('map-embed');
+      wrap.innerHTML = '';
+      wrap.appendChild(frame);
+    });
+  }
 
   // smooth-scroll only for user clicks — hash on page load (e.g. after form redirect) stays instant
   document.querySelectorAll('a[href^="#"]').forEach(a => {
