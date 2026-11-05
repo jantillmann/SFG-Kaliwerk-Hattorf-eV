@@ -32,10 +32,12 @@ jobs:
             set net:max-retries 2;
             set net:timeout 15;
             mirror -R --only-newer --no-perms --parallel=2 \
-              --exclude-glob .git* \
-              --exclude .github/ \
-              --exclude deploy-secrets/ \
-              --exclude LEARNINGS.md \
+              --exclude '^\.git/' \
+              --exclude '^\.github/' \
+              --exclude '^\.claude/' \
+              --exclude '^\.gitignore$' \
+              --exclude '^deploy-secrets/' \
+              --exclude '^LEARNINGS\.md$' \
               ./ /usr/www/users/cydw6y/;
             bye
           "
