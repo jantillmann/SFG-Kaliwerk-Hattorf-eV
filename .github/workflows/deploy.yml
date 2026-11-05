@@ -12,20 +12,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy via SFTP (lftp mirror)
+      - name: Set up SSH key
         env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      # SSH-Zugang bei Hetzner Webhosting nur per Schlüssel auf Port 222.
+      # Dort ist man nicht im chroot, daher der absolute Pfad zum Document Root.
+      - name: Deploy via SFTP (lftp mirror, SSH key)
         run: |
           sudo apt-get update -y && sudo apt-get install -y lftp
-          lftp -u "$FTP_USERNAME,$FTP_PASSWORD" sftp://$FTP_SERVER:22 -e "
-            set sftp:auto-confirm yes;
+          lftp -u "cydw6y," sftp://www754.your-server.de:222 -e "
+            set sftp:connect-program 'ssh -a -x -i $HOME/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes';
             set net:max-retries 2;
             set net:timeout 15;
             mirror -R --only-newer --no-perms --parallel=2 \
               --exclude-glob .git* \
               --exclude .github/ \
-              ./ /public_html/;
+              --exclude deploy-secrets/ \
+              --exclude LEARNINGS.md \
+              ./ /usr/www/users/cydw6y/;
             bye
           "
+          rm -f ~/.ssh/deploy_key
